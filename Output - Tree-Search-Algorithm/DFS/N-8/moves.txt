@@ -1,0 +1,2 @@
+Nodes Expanded: 3242064
+Time spent: 2.444 seconds
