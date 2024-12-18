@@ -110,15 +110,25 @@ public class KnightTour {
                 printBoard(result, n);
             }
         } catch (OutOfMemoryError e) {
-            Runtime runtime = Runtime.getRuntime();
-            System.out.println("Out of Memory Error occurred.");
-
-            System.out.println("Maximum memory: " + (runtime.maxMemory() / 1024 / 1024) + " MB");
-            System.out.println("Total memory: " + (runtime.totalMemory() / 1024 / 1024) + " MB");
-            System.out.println("Free memory: " + (runtime.freeMemory() / 1024 / 1024) + " MB");
-            System.out.println("Used memory: " + ((runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024) + " MB");
-
-            System.err.println("Error: Ran out of memory. Please try a smaller board size or a different search method.");
+            try (BufferedWriter logWriter = new BufferedWriter(new FileWriter("OutOfMem.txt"))) {
+                Runtime runtime = Runtime.getRuntime();
+                System.out.println("Out of Memory Error occurred.");
+                logWriter.write("Out of Memory Error occurred.\n");
+                
+                System.out.println("Maximum memory: " + (runtime.maxMemory() / 1024 / 1024) + " MB");
+                logWriter.write("Maximum memory: " + (runtime.maxMemory() / 1024 / 1024) + " MB\n");
+                System.out.println("Total memory: " + (runtime.totalMemory() / 1024 / 1024) + " MB");
+                logWriter.write("Total memory: " + (runtime.totalMemory() / 1024 / 1024) + " MB\n");
+                System.out.println("Free memory: " + (runtime.freeMemory() / 1024 / 1024) + " MB");
+                logWriter.write("Free memory: " + (runtime.freeMemory() / 1024 / 1024) + " MB\n");
+                System.out.println("Used memory: " + ((runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024) + " MB");
+                logWriter.write("Used memory: " + ((runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024) + " MB\n");
+                
+                System.err.println("Error: Ran out of memory. Please try a smaller board size or a different search method.");
+                logWriter.write("Error: Ran out of memory. Please try a smaller board size or a different search method.\n");
+            } catch (IOException ex) {
+                System.err.println("An unexpected error occurred: " + ex.getMessage());
+            }
         } catch (IllegalArgumentException e) {
             System.err.println("An unexpected error occurred: " + e.getMessage());
         }
@@ -254,9 +264,9 @@ public class KnightTour {
                 // check if the time constraint has been reached
                 if (currentTime - startTime > timeConstraint) {
                     System.out.println("Nodes Expanded: " + nodesExpanded);
-                    logWriter.write("Nodes Expanded : " + nodesExpanded);
+                    logWriter.write("Nodes Expanded : " + nodesExpanded + "\n");
                     System.out.println("Timeout.");
-                    logWriter.write("Timeout.");
+                    logWriter.write("Timeout.\n");
                     logWriter.close();
                     return null;
                 }
